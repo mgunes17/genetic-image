@@ -1,9 +1,97 @@
+import org.opencv.core.Core;
+import org.opencv.core.Mat;
+import org.opencv.imgcodecs.Imgcodecs;
+
+import javax.swing.*;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.awt.image.DataBufferByte;
+import java.util.*;
+import java.util.List;
+
 
 /**
  * Created by mgunes on 05.12.2016.
  */
 public class Main {
+
     public static void main(String[] args) {
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+
+        Mat img = Imgcodecs.imread("mean5.png");
+        Main main = new Main();
+
+        Image image = main.toBufferedImage(img);
+        ImageIcon imageIcon = new ImageIcon();
+        imageIcon.setImage(image);
+
+        List<Pixel> pixelsInImage = main.findColorsInImage(img);
+        System.out.println(pixelsInImage.size());
+
+        Life life = new Life(20, img, img.width(), img.height(), img.type(), pixelsInImage);
+        JFrame frame = new JFrame("My GUI");
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setResizable(true);
+        frame.setLocationRelativeTo(null);
+        life.initialize();
+
+        for (int i = 0; i < 100000; i++) {
+            life.nextAge();
+            if(i > 100 && i % 100 == 0) {
+                image = main.toBufferedImage(life.findBestChromosome());
+                imageIcon.setImage(image);
+                frame.setSize(imageIcon.getIconWidth() + 10, imageIcon.getIconHeight() + 35);
+                JLabel label1 = new JLabel(" ", imageIcon, JLabel.CENTER);
+                frame.getContentPane().add(label1);
+                frame.validate();
+                frame.setVisible(true);
+
+                //System.out.println("iteration: " + i + " Fitness:" + chromosome.getFitness());
+             }
+        }
+    }
+
+    public List<Pixel> findColorsInImage(Mat img) {
+        Set<String> pixels = new HashSet<>();
+        List<Pixel> pixelList = new ArrayList<>();
+        String pixelString;
+        double[] values;
+
+        for (int i = 0; i < img.height(); i++) {
+            for (int j = 0; j < img.width(); j++) {
+                values = img.get(i, j);
+                pixelString = values[0] + "-" + values[1] + "-" + values[2];
+                pixels.add(pixelString);
+            }
+        }
+
+        Iterator<String> iterator = pixels.iterator();
+        while (iterator.hasNext()) {
+            String[] tokens = iterator.next().split("-");
+            Pixel pixel = new Pixel();
+            pixel.setB(Double.parseDouble(tokens[0]));
+            pixel.setG(Double.parseDouble(tokens[1]));
+            pixel.setR(Double.parseDouble(tokens[2]));
+            pixelList.add(pixel);
+            System.out.println(pixel.getB() + " " + pixel.getG() + " " + pixel.getR());
+        }
+
+        return pixelList;
+    }
+
+
+    public Image toBufferedImage(Mat m) {
+        int type = BufferedImage.TYPE_BYTE_GRAY;
+        if (m.channels() > 1) {
+            type = BufferedImage.TYPE_3BYTE_BGR;
+        }
+        int bufferSize = m.channels() * m.cols() * m.rows();
+        byte[] b = new byte[bufferSize];
+        m.get(0, 0, b); // get all the pixels
+        BufferedImage image = new BufferedImage(m.cols(), m.rows(), type);
+        final byte[] targetPixels = ((DataBufferByte) image.getRaster().getDataBuffer()).getData();
+        System.arraycopy(b, 0, targetPixels, 0, b.length);
+        return image;
 
     }
 
