@@ -8,7 +8,6 @@ import java.util.*;
 public class Life {
     private int populationSize;
     private List<Chromosome> population;
-    // private List<Chromosome> newGeneration;
     private List<Pixel> pixels;
     private GeneticAlgorithms geneticAlgorithms;
     private Mat alphaChromosome;
@@ -20,7 +19,6 @@ public class Life {
         super();
         this.populationSize = populationSize;
         population = new ArrayList<Chromosome>();
-        // newGeneration = new ArrayList<Chromosome>();
         geneticAlgorithms = new GeneticAlgorithms();
         this.width = width;
         this.height = height;
@@ -52,30 +50,22 @@ public class Life {
     public void nextAge() {
         Chromosome parent1, parent2;
         Collections.sort(population, new FitnessComparator());
-        //newGeneration.clear();
+        System.out.println(population.get(0).getFitness() + " " + population.get(populationSize - 1).getFitness());
+
         List<Chromosome> newGeneration = new ArrayList<>();
-        Map<Integer, Integer> map = new HashMap<>();
         int fitness = 0;
+
         for (int i = 0; i < populationSize; i++) {
-            Chromosome child = null;
-            do {
-                parent1 = selection();
-                parent2 = selection();
+            parent1 = selection();
+            parent2 = selection();
 
-                child = geneticAlgorithms.crossover(parent1.getImg(), parent2.getImg(), pixels);
-                fitness = measureManhattan(alphaChromosome, child.getImg());
-                child.setFitness(fitness);
-            } while(map.containsKey(fitness) || parent1.getFitness() == parent2.getFitness());
-
-            map.put(fitness, fitness);
+            Chromosome child = geneticAlgorithms.crossover(parent1.getImg(), parent2.getImg(), pixels);
+            fitness = measureManhattan(alphaChromosome, child.getImg());
+            child.setFitness(fitness);
             newGeneration.add(child);
         }
-        // population.clear();
+
         population = newGeneration;
-        /*for(Chromosome c: newGeneration) {
-            population.add(c);
-        }*/
-        Collections.sort(population, new FitnessComparator());
         System.out.println(population.get(0).getFitness() + " " + population.get(populationSize - 1).getFitness());
     }
 
@@ -91,10 +81,8 @@ public class Life {
                 arrayPointer++;
             }
         }
-        //System.out.println(orderedSelectList[selectRandom]);
 
         return population.get(orderedSelectList[selectRandom]);
-        //return population.get(0);
     }
 
 
@@ -144,15 +132,6 @@ public class Life {
         }
     }
 
-    /*public  void findFitness() {
-        int fitness;
-        for(Chromosome chromosome: population){
-            fitness = measureManhattan(alphaChromosome, chromosome.getImg());
-            chromosome.setFitness(fitness);
-        }
-    }*/
-
-
     //getter-setter
 
     public int getPopulationSize() {
@@ -170,12 +149,4 @@ public class Life {
     public void setPopulation(List<Chromosome> population) {
         this.population = population;
     }
-
-    /*public List<Chromosome> getNewGeneration() {
-        return newGeneration;
-    }*/
-
-    /*public void setNewGeneration(List<Chromosome> newGeneration) {
-        this.newGeneration = newGeneration;
-    }*/
 }
