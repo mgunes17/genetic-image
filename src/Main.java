@@ -9,16 +9,14 @@ import java.awt.image.DataBufferByte;
 import java.util.*;
 import java.util.List;
 
-
 /**
  * Created by mgunes on 05.12.2016.
  */
 public class Main {
-
     public static void main(String[] args) {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
-        Mat img = Imgcodecs.imread("mean5.png");
+        Mat img = Imgcodecs.imread("mean8.jpg");
         Main main = new Main();
 
         Image image = main.toBufferedImage(img);
@@ -28,7 +26,7 @@ public class Main {
         List<Pixel> pixelsInImage = main.findColorsInImage(img);
         System.out.println(pixelsInImage.size());
 
-        Life life = new Life(20, img, img.width(), img.height(), img.type(), pixelsInImage);
+        Life life = new Life(150, img, img.width(), img.height(), img.type(), pixelsInImage);
         JFrame frame = new JFrame("My GUI");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(true);
@@ -37,17 +35,15 @@ public class Main {
 
         for (int i = 0; i < 100000; i++) {
             life.nextAge();
-            if(i > 100 && i % 100 == 0) {
-                image = main.toBufferedImage(life.findBestChromosome());
-                imageIcon.setImage(image);
-                frame.setSize(imageIcon.getIconWidth() + 10, imageIcon.getIconHeight() + 35);
-                JLabel label1 = new JLabel(" ", imageIcon, JLabel.CENTER);
-                frame.getContentPane().add(label1);
-                frame.validate();
-                frame.setVisible(true);
+            image = main.toBufferedImage(life.findBestChromosome());
+            imageIcon.setImage(image);
+            frame.setSize(imageIcon.getIconWidth() + 10, imageIcon.getIconHeight() + 35);
+            JLabel label1 = new JLabel(" ", imageIcon, JLabel.CENTER);
+            frame.getContentPane().add(label1);
+            frame.validate();
+            frame.setVisible(true);
+            //System.out.println("iteration: " + i);
 
-                //System.out.println("iteration: " + i + " Fitness:" + chromosome.getFitness());
-             }
         }
     }
 
@@ -73,14 +69,14 @@ public class Main {
             pixel.setG(Double.parseDouble(tokens[1]));
             pixel.setR(Double.parseDouble(tokens[2]));
             pixelList.add(pixel);
-            System.out.println(pixel.getB() + " " + pixel.getG() + " " + pixel.getR());
         }
 
         return pixelList;
     }
 
 
-    public Image toBufferedImage(Mat m) {
+
+    public static Image toBufferedImage(Mat m) {
         int type = BufferedImage.TYPE_BYTE_GRAY;
         if (m.channels() > 1) {
             type = BufferedImage.TYPE_3BYTE_BGR;
@@ -94,5 +90,6 @@ public class Main {
         return image;
 
     }
+
 
 }

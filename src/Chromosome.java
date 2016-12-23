@@ -1,5 +1,6 @@
 import org.opencv.core.Mat;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.Random;
 
@@ -20,7 +21,7 @@ public class Chromosome implements Comparable<Chromosome> {
         int mutationChance = random.nextInt(100);
 
         if (mutationChance < mutationRate) {
-            int mutantCount = random.nextInt(100) + 100;
+            int mutantCount = random.nextInt(10) + 20;
             int mutantX, mutantY, imageWidth, imageHeight;
             double[] values = new double[3];
 

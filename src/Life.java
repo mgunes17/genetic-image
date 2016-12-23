@@ -51,26 +51,32 @@ public class Life {
 
     public void nextAge() {
         Chromosome parent1, parent2;
-        //Collections.sort(population, new FitnessComparator());
+        Collections.sort(population, new FitnessComparator());
         //newGeneration.clear();
         List<Chromosome> newGeneration = new ArrayList<>();
+        Map<Integer, Integer> map = new HashMap<>();
+        int fitness = 0;
         for (int i = 0; i < populationSize; i++) {
-            parent1 = selection();
+            Chromosome child = null;
             do {
+                parent1 = selection();
                 parent2 = selection();
-            } while (parent1.getFitness() == parent2.getFitness());
-            Chromosome child = geneticAlgorithms.crossover(parent1.getImg(), parent2.getImg(), pixels);
-            child.setFitness(measureManhattan(alphaChromosome, child.getImg()));
-            System.out.println("parent1: " + parent1.getFitness() + " parent2: " + parent2.getFitness() + " child: " + child.getFitness());
+
+                child = geneticAlgorithms.crossover(parent1.getImg(), parent2.getImg(), pixels);
+                fitness = measureManhattan(alphaChromosome, child.getImg());
+                child.setFitness(fitness);
+            } while(map.containsKey(fitness) || parent1.getFitness() == parent2.getFitness());
+
+            map.put(fitness, fitness);
             newGeneration.add(child);
         }
-        population = new ArrayList<Chromosome>(newGeneration);
-        //population = newGeneration;
+        // population.clear();
+        population = newGeneration;
         /*for(Chromosome c: newGeneration) {
             population.add(c);
         }*/
         Collections.sort(population, new FitnessComparator());
-        //System.out.println(population.get(0).getFitness() + " " + population.get(populationSize - 1).getFitness());
+        System.out.println(population.get(0).getFitness() + " " + population.get(populationSize - 1).getFitness());
     }
 
     public Chromosome selection() {
@@ -80,14 +86,15 @@ public class Life {
         int selectRandom = random.nextInt(arraySize);
         int arrayPointer = 1;
         for (int i = 1; i < populationSize + 1; i++) {
-            for (int j = 0; j < populationSize - i + 1; j++) {
+            for (int j = 0; j < populationSize - i +1; j++) {
                 orderedSelectList[arrayPointer] = i - 1;
                 arrayPointer++;
             }
         }
         //System.out.println(orderedSelectList[selectRandom]);
+
         return population.get(orderedSelectList[selectRandom]);
-        //return population.get(random.nextInt(20));
+        //return population.get(0);
     }
 
 

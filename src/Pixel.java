@@ -1,49 +1,26 @@
 /**
- * Created by ercan on 07.12.2016.
+ * Created by mgunes on 07.12.2016.
  */
 public class Pixel {
-    private int clusterId;
-    private int row;
-    private int column;
-    private int label;
+    private int clusterID;
     private double b;
     private double g;
     private double r;
+    private int label;
+    private int row;
+    private int column;
 
     public Pixel() {
         super();
     }
 
-    public int getClusterId() {
-        return clusterId;
+    //getter-setter
+    public int getClusterID() {
+        return clusterID;
     }
 
-    public void setClusterId(int clusterId) {
-        this.clusterId = clusterId;
-    }
-
-    public int getRow() {
-        return row;
-    }
-
-    public void setRow(int row) {
-        this.row = row;
-    }
-
-    public int getColumn() {
-        return column;
-    }
-
-    public void setColumn(int column) {
-        this.column = column;
-    }
-
-    public int getLabel() {
-        return label;
-    }
-
-    public void setLabel(int label) {
-        this.label = label;
+    public void setClusterID(int clusterID) {
+        this.clusterID = clusterID;
     }
 
     public double getB() {
@@ -69,4 +46,29 @@ public class Pixel {
     public void setR(double r) {
         this.r = r;
     }
+
+    public int getLabel() {
+        return label;
+    }
+
+    public void setLabel(int label) {
+        this.label = label;
+    }
+
+    public int getRow() {
+        return row;
+    }
+
+    public void setRow(int row) {
+        this.row = row;
+    }
+
+    public int getColumn() {
+        return column;
+    }
+
+    public void setColumn(int column) {
+        this.column = column;
+    }
+
 }
