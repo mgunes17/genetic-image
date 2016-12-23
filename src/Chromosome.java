@@ -8,7 +8,7 @@ import java.util.Random;
  * Created by mgunes on 06.12.2016.
  */
 public class Chromosome implements Comparable<Chromosome> {
-    private final static int mutationRate = 50;
+    private final static int mutationRate = 30;
     private Mat img;
     private int fitness;
 

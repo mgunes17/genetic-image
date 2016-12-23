@@ -59,9 +59,9 @@ public class KMeans {
 
         for(int i = 0; i < clusterNumber; i++) {
             Pixel px = new Pixel();
-            px.setB(kcenter.get(i).getSumBlue() / kcenter.get(i).getSize());
-            px.setG(kcenter.get(i).getSumGreen() / kcenter.get(i).getSize());
-            px.setR(kcenter.get(i).getSumRed() / kcenter.get(i).getSize());
+            px.setB(kcenter.get(i).getSumBlue() / (kcenter.get(i).getSize() + 1));
+            px.setG(kcenter.get(i).getSumGreen() / (kcenter.get(i).getSize() + 1));
+            px.setR(kcenter.get(i).getSumRed() / (kcenter.get(i).getSize() + 1));
 
             newKcenter.add(px);
 

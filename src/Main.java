@@ -16,8 +16,17 @@ public class Main {
     public static void main(String[] args) {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
-        Mat img = Imgcodecs.imread("mean8.jpg");
+        Scanner in = new Scanner(System.in);
+        System.out.println("Resim yolu:");
+        String path = in.next();
+        Mat img = Imgcodecs.imread(path);
         Main main = new Main();
+
+        KMeans kMeans = new KMeans(img, 5);
+        kMeans.startKMeans();
+        img = kMeans.getNewImg();
+
+        Imgcodecs.imwrite("img.jpg", img);
 
         Image image = main.toBufferedImage(img);
         ImageIcon imageIcon = new ImageIcon();
@@ -26,7 +35,7 @@ public class Main {
         List<Pixel> pixelsInImage = main.findColorsInImage(img);
         System.out.println(pixelsInImage.size());
 
-        Life life = new Life(150, img, img.width(), img.height(), img.type(), pixelsInImage);
+        Life life = new Life(500, img, img.width(), img.height(), img.type(), pixelsInImage);
         JFrame frame = new JFrame("My GUI");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(true);
@@ -42,7 +51,7 @@ public class Main {
             frame.getContentPane().add(label1);
             frame.validate();
             frame.setVisible(true);
-            //System.out.println("iteration: " + i);
+            System.out.println("iteration: " + i);
 
         }
     }
