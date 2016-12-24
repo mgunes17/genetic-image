@@ -13,16 +13,16 @@ public class MeasureWithEdgeMatching implements DistanceMeasure {
     @Override
     public int findDistance(Chromosome c1, Chromosome c2) {
         int diff = c1.getEdgeCoordinates().size();
-        boolean found = false;
+        int size = c2.getEdgeCoordinates().size();
 
         for(Coordinate coor: c1.getEdgeCoordinates()) {
-            found = false;
-            for(Coordinate coor2: c2.getEdgeCoordinates()) {
-                if (coor.getX() == coor2.getX() && coor.getY() == coor2.getY())
-                    found = true;
+            int i = 0;
+            while(i < size && !(coor.getX() == c2.getEdgeCoordinates().get(i).getX() &&
+                    coor.getY() == c2.getEdgeCoordinates().get(i).getY())) {
+                i++;
             }
 
-            if(found == true)
+            if(i < size)
                 diff--;
         }
 

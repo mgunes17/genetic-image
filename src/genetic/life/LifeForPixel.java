@@ -29,7 +29,7 @@ public class LifeForPixel extends Life {
 
         for (int k = 0; k < getPopulationSize(); k++) {
             Chromosome chromosome = new Chromosome();
-            Mat newImage = new Mat(getHeight(), getHeight(), getType());
+            Mat newImage = new Mat(getHeight(), getWidth(), getType());
             for (int i = 0; i < getWidth(); i++) {
                 for (int j = 0; j < getHeight(); j++) {
                     values = createRandomColor();
