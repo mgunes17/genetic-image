@@ -49,7 +49,7 @@ public class GeneticAlgorithms {
         int edgeSize = parent1.getEdgeCoordinates().size();
 
         Chromosome childChromosome = new Chromosome();
-        Mat child = new Mat(width, height, type);
+        Mat child = new Mat(height, width, type);
         List<Coordinate> edges = new ArrayList<>();
 
         List<Integer> template = new ArrayList<>();
@@ -57,6 +57,12 @@ public class GeneticAlgorithms {
         Random random = new Random();
         for(int i = 0; i < edgeSize; i++) {
             template.add(random.nextInt(2));
+        }
+
+        for(int i = 0; i < parent1.getImg().height(); i++) {
+            for(int j = 0; j < parent1.getImg().width(); j++) {
+                child.put(i, j, 0);
+            }
         }
 
         Coordinate coordinate;
@@ -72,9 +78,10 @@ public class GeneticAlgorithms {
             }
         }
 
+
         childChromosome.setImg(child);
         childChromosome.setEdgeCoordinates(edges);
-        //childChromosome.mutationForCircle();
+        childChromosome.mutationForCircle();
         return childChromosome;
     }
 }

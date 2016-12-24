@@ -14,7 +14,7 @@ public class Main {
     public static void main(String[] args) {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
-        Main main = new Main();
+       /* Main main = new Main();
         Scanner in = new Scanner(System.in);
         System.out.println("Resim yolu:");
         String path = in.next();
@@ -45,7 +45,7 @@ public class Main {
         alpha.setImg(imageCanny);
         alpha.setEdgeCoordinates(imgEdges);
 
-        LifeForCircle lifeForCircle = new LifeForCircle(20, alpha, imageCanny.width(), imageCanny.height(), imageCanny.type());
+        LifeForCircle lifeForCircle = new LifeForCircle(75, alpha, imageCanny.width(), imageCanny.height(), imageCanny.type());
 
         JFrame frame = new JFrame("My GUI");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -65,10 +65,10 @@ public class Main {
                 frame.setVisible(true);
                 //System.out.println("iteration: " + i);
             }
-        }
+        }*/
 
 
-        /*Scanner in = new Scanner(System.in);
+        Scanner in = new Scanner(System.in);
         System.out.println("Resim yolu:");
         String path = in.next();
 
@@ -105,7 +105,7 @@ public class Main {
             frame.validate();
             frame.setVisible(true);
             System.out.println("iteration: " + i);
-        }*/
+        }
     }
 
     public List<Pixel> findColorsInImage(Mat img) {

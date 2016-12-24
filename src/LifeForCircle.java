@@ -36,7 +36,7 @@ public class LifeForCircle {
 
         for (int k = 0; k < populationSize; k++) {
             Chromosome chromosome = new Chromosome();
-            Mat newImage = new Mat(width, height, type);
+            Mat newImage = new Mat(height, width, type);
             List<Coordinate> edges = new ArrayList<>();
 
             for (int i = 0; i < alphaChromosome.getEdgeCoordinates().size(); i++){
@@ -45,7 +45,7 @@ public class LifeForCircle {
                 edges.add(coordinate);
             }
 
-            fitness = measureFitness(alphaChromosome.getEdgeCoordinates(), edges);
+            fitness = measureFitnessWithEdges(alphaChromosome.getEdgeCoordinates(), edges);
             chromosome.setImg(newImage);
             chromosome.setFitness(fitness);
             chromosome.setEdgeCoordinates(edges);
@@ -66,7 +66,7 @@ public class LifeForCircle {
             parent2 = selection();
 
             Chromosome child = geneticAlgorithms.crossoverForCircle(parent1, parent2);
-            fitness = measureFitness(alphaChromosome.getEdgeCoordinates(), child.getEdgeCoordinates());
+            fitness = measureFitnessWithEdgeMatching(child.getEdgeCoordinates(), alphaChromosome.getEdgeCoordinates());
             child.setFitness(fitness);
             newGeneration.add(child);
         }
@@ -104,7 +104,7 @@ public class LifeForCircle {
     }
 
 
-    private int measureFitness(List<Coordinate> edges1, List<Coordinate> edges2) {
+    private int measureFitnessWithEdges(List<Coordinate> edges1, List<Coordinate> edges2) {
         int diff = 0;
 
         for(int i = 0; i < edges1.size(); i++){
@@ -114,11 +114,41 @@ public class LifeForCircle {
         return diff;
     }
 
+    private int measureFitnessWithPixels(Mat img1, Mat img2) {
+        int diff = 0;
+
+        for(int i = 0; i < img1.height(); i++) {
+            for(int j = 0; j < img1.width(); j++) {
+                diff += Math.abs(img1.get(i,j)[0] - img2.get(i,j)[0]);
+            }
+        }
+
+        return diff;
+    }
+
+    private int measureFitnessWithEdgeMatching(List<Coordinate> edges1, List<Coordinate> edges2) {
+        int diff = edges1.size();
+        boolean found = false;
+
+        for(Coordinate c: edges1) {
+            found = false;
+            for(Coordinate c2: edges2) {
+                if (c.getX() == c2.getX() && c.getY() == c2.getY())
+                    found = true;
+            }
+
+            if(found == true)
+                diff--;
+        }
+
+        return diff;
+    }
+
     private Coordinate  createRandomCoordinates(){
         Random random = new Random();
         int randomX = random.nextInt(width);
         int randomY = random.nextInt(height);
-        return new Coordinate(randomX, randomY);
+        return new Coordinate(randomY, randomX);
     }
 
 
