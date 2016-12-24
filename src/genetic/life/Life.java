@@ -1,0 +1,153 @@
+package genetic.life;
+
+import genetic.Chromosome;
+import genetic.crossover.Crossover;
+import genetic.distance.DistanceMeasure;
+import genetic.distance.MeasureWithEdgeMatching;
+import org.opencv.core.Mat;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Random;
+
+/**
+ * Created by mgunes on 24.12.2016.
+ */
+public abstract class Life {
+    private List<Chromosome> population;
+    private Chromosome alphaChromosome;
+    private Crossover crossover;
+    private DistanceMeasure distanceMeasure;
+    private int width;
+    private int height;
+    private int type;
+    private int populationSize;
+
+    public abstract void initialize();
+
+    public Life(int width, int height, int type, int populationSize, Chromosome alphaChromosome) {
+        population = new ArrayList<Chromosome>();
+        this.alphaChromosome = alphaChromosome;
+        this.populationSize = populationSize;
+        this.width = width;
+        this.height = height;
+        this.type = type;
+    }
+
+    public Chromosome selection() {
+        Random random = new Random();
+        int arraySize = (population.size() * (population.size() + 1)) / 2 + 1;
+        int[] orderedSelectList = new int[arraySize];
+        int selectRandom = random.nextInt(arraySize);
+        int arrayPointer = 1;
+        for (int i = 1; i < populationSize + 1; i++) {
+            for (int j = 0; j < populationSize - i +1; j++) {
+                orderedSelectList[arrayPointer] = i - 1;
+                arrayPointer++;
+            }
+        }
+
+        return population.get(orderedSelectList[selectRandom]);
+    }
+
+    public Mat findBestChromosome() {
+        int bestFitness = getPopulation().get(0).getFitness();
+        Mat bestMat = getPopulation().get(0).getImg();
+
+        for (Chromosome chromosome : new ArrayList<Chromosome>()) {
+            if (chromosome.getFitness() < bestFitness) {
+                bestFitness = chromosome.getFitness();
+                bestMat = chromosome.getImg();
+            }
+        }
+        return bestMat;
+    }
+
+    public void nextAge() {
+        Chromosome parent1, parent2;
+        Collections.sort(getPopulation(), new LifeForPixel.FitnessComparator());
+        System.out.println(getPopulation().get(0).getFitness() + " " + getPopulation().get(getPopulationSize() - 1).getFitness());
+
+        List<Chromosome> newGeneration = new ArrayList<>();
+        int fitness = 0;
+
+        for (int i = 0; i < getPopulationSize(); i++) {
+            parent1 = selection();
+            parent2 = selection();
+
+            Chromosome child = crossover.crossover(parent1, parent2);
+            fitness = distanceMeasure.findDistance(alphaChromosome, child);
+            child.setFitness(fitness);
+            newGeneration.add(child);
+        }
+
+        setPopulation(newGeneration);
+        System.out.println(getPopulation().get(0).getFitness() + " " + getPopulation().get(getPopulationSize() - 1).getFitness());
+    }
+
+    //getter-setter
+    public int getWidth() {
+        return width;
+    }
+
+    public void setWidth(int width) {
+        this.width = width;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
+
+    public List<Chromosome> getPopulation() {
+        return population;
+    }
+
+    public void setPopulation(List<Chromosome> population) {
+        this.population = population;
+    }
+
+    public int getPopulationSize() {
+        return populationSize;
+    }
+
+    public void setPopulationSize(int populationSize) {
+        this.populationSize = populationSize;
+    }
+
+    public Chromosome getAlphaChromosome() {
+        return alphaChromosome;
+    }
+
+    public void setAlphaChromosome(Chromosome alphaChromosome) {
+        this.alphaChromosome = alphaChromosome;
+    }
+
+    public Crossover getCrossover() {
+        return crossover;
+    }
+
+    public void setCrossover(Crossover crossover) {
+        this.crossover = crossover;
+    }
+
+    public DistanceMeasure getDistanceMeasure() {
+        return distanceMeasure;
+    }
+
+    public void setDistanceMeasure(DistanceMeasure distanceMeasure) {
+        this.distanceMeasure = distanceMeasure;
+    }
+}

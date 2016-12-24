@@ -1,3 +1,10 @@
+import genetic.Chromosome;
+import genetic.Coordinate;
+import genetic.life.Life;
+import genetic.life.LifeForEdge;
+import genetic.life.LifeForPixel;
+import kmeans.KMeans;
+import kmeans.Pixel;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
@@ -10,85 +17,72 @@ import java.awt.image.DataBufferByte;
 import java.util.*;
 import java.util.List;
 
+
 public class Main {
     public static void main(String[] args) {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
-       /* Main main = new Main();
         Scanner in = new Scanner(System.in);
         System.out.println("Resim yolu:");
         String path = in.next();
-
         Mat img = Imgcodecs.imread(path);
-        Mat imageGray = new Mat();
-        Mat imageCanny = new Mat();
 
-        Imgproc.cvtColor(img, imageGray, Imgproc.COLOR_BGR2GRAY);
-        Imgproc.Canny(imageGray, imageCanny, 150, 200, 3, false);
-        Imgcodecs.imwrite("img.jpg", imageCanny);
-
-        List<Coordinate> imgEdges = new ArrayList<>();
-
-        for(int i = 0; i < imageCanny.rows(); i++){
-            for(int j = 0; j < imageCanny.cols(); j++){
-                if(imageCanny.get(i, j)[0] == 255.0){
-                    imgEdges.add(new Coordinate(i, j));
-                }
-            }
+        while(img.height() == 0) {
+            System.out.println("Resim bulunamadı.");
+            path = in.next();
+            img = Imgcodecs.imread(path);
         }
 
-        Image image = main.toBufferedImage(imageCanny);
-        ImageIcon imageIcon = new ImageIcon();
-        imageIcon.setImage(image);
-
-        Chromosome alpha = new Chromosome();
-        alpha.setImg(imageCanny);
-        alpha.setEdgeCoordinates(imgEdges);
-
-        LifeForCircle lifeForCircle = new LifeForCircle(75, alpha, imageCanny.width(), imageCanny.height(), imageCanny.type());
-
-        JFrame frame = new JFrame("My GUI");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setResizable(true);
-        frame.setLocationRelativeTo(null);
-        lifeForCircle.initialize();
-
-        for (int i = 0; i < 100000; i++) {
-            if(i % 100 == 1) {
-                lifeForCircle.nextAge();
-                image = main.toBufferedImage(lifeForCircle.findBestChromosome());
-                imageIcon.setImage(image);
-                frame.setSize(imageIcon.getIconWidth() + 10, imageIcon.getIconHeight() + 35);
-                JLabel label1 = new JLabel(" ", imageIcon, JLabel.CENTER);
-                frame.getContentPane().add(label1);
-                frame.validate();
-                frame.setVisible(true);
-                //System.out.println("iteration: " + i);
-            }
-        }*/
-
-
-        Scanner in = new Scanner(System.in);
-        System.out.println("Resim yolu:");
-        String path = in.next();
-
-        Mat img = Imgcodecs.imread(path);
         Main main = new Main();
 
-        KMeans kMeans = new KMeans(img, 5);
-        kMeans.startKMeans();
-        img = kMeans.getNewImg();
+        System.out.println("Edge için 1, px için 2:");
+        int select = in.nextInt();
 
-        Imgcodecs.imwrite("img.jpg", img);
+        if(select == 1) {
+            Mat imageGray = new Mat();
+            Mat imageCanny = new Mat();
+            Imgproc.cvtColor(img, imageGray, Imgproc.COLOR_BGR2GRAY);
+            Imgproc.Canny(imageGray, imageCanny, 150, 200, 3, false);
+            Imgcodecs.imwrite("img.jpg", imageCanny);
 
-        Image image = main.toBufferedImage(img);
+            List<Coordinate> imgEdges = new ArrayList<>();
+
+            for(int i = 0; i < imageCanny.rows(); i++){
+                for(int j = 0; j < imageCanny.cols(); j++){
+                    if(imageCanny.get(i, j)[0] == 255.0){
+                        imgEdges.add(new Coordinate(i, j));
+                    }
+                }
+            }
+
+            Chromosome alpha = new Chromosome();
+            alpha.setImg(imageCanny);
+            alpha.setEdgeCoordinates(imgEdges);
+
+            LifeForEdge lifeForCircle = new LifeForEdge(75, alpha, imageCanny.width(), imageCanny.height(), imageCanny.type());
+            main.run(lifeForCircle, imageCanny);
+        } else {
+            KMeans kMeans = new KMeans(img, 5);
+            kMeans.startKMeans();
+            img = kMeans.getNewImg();
+
+            Imgcodecs.imwrite("img.jpg", img);
+
+            List<Pixel> pixelsInImage = main.findColorsInImage(img);
+            System.out.println(pixelsInImage.size());
+
+            Chromosome alpha = new Chromosome();
+            alpha.setImg(img);
+            LifeForPixel life = new LifeForPixel(500, alpha, img.width(), img.height(), img.type(), pixelsInImage);
+            main.run(life, img);
+        }
+    }
+
+    public void run(Life life, Mat img) {
+        Image image = toBufferedImage(img);
         ImageIcon imageIcon = new ImageIcon();
         imageIcon.setImage(image);
 
-        List<Pixel> pixelsInImage = main.findColorsInImage(img);
-        System.out.println(pixelsInImage.size());
-
-        Life life = new Life(500, img, img.width(), img.height(), img.type(), pixelsInImage);
         JFrame frame = new JFrame("My GUI");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(true);
@@ -97,14 +91,14 @@ public class Main {
 
         for (int i = 0; i < 100000; i++) {
             life.nextAge();
-            image = main.toBufferedImage(life.findBestChromosome());
+            image = toBufferedImage(life.findBestChromosome());
             imageIcon.setImage(image);
             frame.setSize(imageIcon.getIconWidth() + 10, imageIcon.getIconHeight() + 35);
             JLabel label1 = new JLabel(" ", imageIcon, JLabel.CENTER);
             frame.getContentPane().add(label1);
             frame.validate();
             frame.setVisible(true);
-            System.out.println("iteration: " + i);
+            //System.out.println("iteration: " + i);
         }
     }
 
@@ -135,8 +129,6 @@ public class Main {
         return pixelList;
     }
 
-
-
     public static Image toBufferedImage(Mat m) {
         int type = BufferedImage.TYPE_BYTE_GRAY;
         if (m.channels() > 1) {
@@ -151,6 +143,5 @@ public class Main {
         return image;
 
     }
-
 
 }
