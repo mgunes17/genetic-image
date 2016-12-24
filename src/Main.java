@@ -1,3 +1,9 @@
+import genetic.Chromosome;
+import genetic.Coordinate;
+import genetic.life.LifeForEdge;
+import genetic.life.LifeForPixel;
+import kmeans.KMeans;
+import kmeans.Pixel;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.imgcodecs.Imgcodecs;
@@ -10,11 +16,12 @@ import java.awt.image.DataBufferByte;
 import java.util.*;
 import java.util.List;
 
+
 public class Main {
     public static void main(String[] args) {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
-       /* Main main = new Main();
+        Main main = new Main();
         Scanner in = new Scanner(System.in);
         System.out.println("Resim yolu:");
         String path = in.next();
@@ -45,7 +52,7 @@ public class Main {
         alpha.setImg(imageCanny);
         alpha.setEdgeCoordinates(imgEdges);
 
-        LifeForCircle lifeForCircle = new LifeForCircle(75, alpha, imageCanny.width(), imageCanny.height(), imageCanny.type());
+        LifeForEdge lifeForCircle = new LifeForEdge(75, alpha, imageCanny.width(), imageCanny.height(), imageCanny.type());
 
         JFrame frame = new JFrame("My GUI");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -65,14 +72,20 @@ public class Main {
                 frame.setVisible(true);
                 //System.out.println("iteration: " + i);
             }
-        }*/
+        }
 
 
-        Scanner in = new Scanner(System.in);
+       /* Scanner in = new Scanner(System.in);
         System.out.println("Resim yolu:");
         String path = in.next();
-
         Mat img = Imgcodecs.imread(path);
+
+        while(img.height() == 0) {
+            System.out.println("Resim bulunamadı.");
+            path = in.next();
+            img = Imgcodecs.imread(path);
+        }
+
         Main main = new Main();
 
         KMeans kMeans = new KMeans(img, 5);
@@ -88,7 +101,9 @@ public class Main {
         List<Pixel> pixelsInImage = main.findColorsInImage(img);
         System.out.println(pixelsInImage.size());
 
-        Life life = new Life(500, img, img.width(), img.height(), img.type(), pixelsInImage);
+        Chromosome alpha = new Chromosome();
+        alpha.setImg(img);
+        LifeForPixel life = new LifeForPixel(500, alpha, img.width(), img.height(), img.type(), pixelsInImage);
         JFrame frame = new JFrame("My GUI");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frame.setResizable(true);
@@ -104,8 +119,8 @@ public class Main {
             frame.getContentPane().add(label1);
             frame.validate();
             frame.setVisible(true);
-            System.out.println("iteration: " + i);
-        }
+            //System.out.println("iteration: " + i);
+        }*/
     }
 
     public List<Pixel> findColorsInImage(Mat img) {

@@ -1,3 +1,5 @@
+package genetic;
+
 /**
  * Created by ercan on 24.12.2016.
  */
