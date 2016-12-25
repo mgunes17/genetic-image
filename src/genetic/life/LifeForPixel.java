@@ -4,6 +4,7 @@ import genetic.Chromosome;
 import genetic.crossover.Crossover;
 import genetic.crossover.PixelCrossover;
 import genetic.distance.MeasureBetweenPixels;
+import genetic.selection.OrderBasedSelection;
 import kmeans.Pixel;
 import org.opencv.core.Mat;
 
@@ -17,8 +18,10 @@ public class LifeForPixel extends Life {
 
     public LifeForPixel(int populationSize, Chromosome alphaChromosome, int width, int height, int type, List<Pixel> pixels) {
         super(width, height, type, populationSize, alphaChromosome);
-        Crossover crossover = new PixelCrossover(pixels);
+        PixelCrossover crossover = new PixelCrossover(pixels);
+        crossover.setAlpha(alphaChromosome);
         setCrossover(crossover);
+        setSelection(new OrderBasedSelection());
         setDistanceMeasure(new MeasureBetweenPixels());
         this.pixels = pixels;
     }

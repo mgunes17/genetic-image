@@ -122,8 +122,12 @@ public class KMeans {
         Random random = new Random();
 
         for(int i = 0; i < clusterNumber; i++) {
-            int row = random.nextInt(rowsCount);
-            int column = random.nextInt(colsCount);
+            int row;
+            int column;
+            do{
+                row = random.nextInt(rowsCount);
+                column = random.nextInt(colsCount);
+            } while(isCenterExist(row, column));
 
             Pixel px = new Pixel();
             px.setRow(row);
@@ -143,6 +147,20 @@ public class KMeans {
 
             kcenter.add(center);
         }
+    }
+
+    private boolean isCenterExist(int x, int y){
+        boolean result = false;
+
+        for(int i = 0; i < kcenter.size(); i++){
+            if(kcenter.get(i).getCenter().getB() == img.get(x, y)[0]
+                    && kcenter.get(i).getCenter().getG() == img.get(x, y)[1]
+                    && kcenter.get(i).getCenter().getR() == img.get(x, y)[2]){
+                result = true;
+            }
+        }
+
+        return result;
     }
 
     private int findEuclideanDistance(Pixel px1, Pixel px2) {

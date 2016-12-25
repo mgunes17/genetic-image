@@ -62,7 +62,7 @@ public class Main {
             LifeForEdge lifeForCircle = new LifeForEdge(75, alpha, imageCanny.width(), imageCanny.height(), imageCanny.type());
             main.run(lifeForCircle, imageCanny);
         } else {
-            KMeans kMeans = new KMeans(img, 5);
+            KMeans kMeans = new KMeans(img, 2);
             kMeans.startKMeans();
             img = kMeans.getNewImg();
 
@@ -73,7 +73,7 @@ public class Main {
 
             Chromosome alpha = new Chromosome();
             alpha.setImg(img);
-            LifeForPixel life = new LifeForPixel(500, alpha, img.width(), img.height(), img.type(), pixelsInImage);
+            LifeForPixel life = new LifeForPixel(75, alpha, img.width(), img.height(), img.type(), pixelsInImage);
             main.run(life, img);
         }
     }

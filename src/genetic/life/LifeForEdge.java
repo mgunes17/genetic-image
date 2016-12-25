@@ -5,6 +5,7 @@ import genetic.Coordinate;
 import genetic.crossover.EdgeCrossover;
 import genetic.distance.DistanceMeasure;
 import genetic.distance.MeasureWithEdgeMatching;
+import genetic.selection.OrderBasedSelection;
 import org.opencv.core.Mat;
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ public class LifeForEdge extends Life {
     public LifeForEdge(int populationSize, Chromosome alphaChromosome, int width, int height, int type) {
         super(width, height, type, populationSize, alphaChromosome);
         setCrossover(new EdgeCrossover());
+        setSelection(new OrderBasedSelection());
         setDistanceMeasure(new MeasureWithEdgeMatching());
     }
 

@@ -1,6 +1,7 @@
 package genetic.crossover;
 
 import genetic.Chromosome;
+import genetic.distance.MeasureBetweenPixels;
 import kmeans.Pixel;
 import org.opencv.core.Mat;
 
@@ -13,6 +14,7 @@ import java.util.Random;
  */
 public class PixelCrossover implements Crossover {
     private List<Pixel> pixels;
+    private Chromosome alpha;
 
     public PixelCrossover(List<Pixel> pixels) {
         this.pixels = pixels;
@@ -24,9 +26,11 @@ public class PixelCrossover implements Crossover {
         int height = parent1.getImg().height();
         int type = parent1.getImg().type();
         Chromosome childChromosome = new Chromosome();
-        Mat child = new Mat(height, width, type);
+        Mat child1 = new Mat(height, width, type);
+        Mat child2 = new Mat(height, width, type);
 
         Random random = new Random();
+        MeasureBetweenPixels measureBetweenPixels = new MeasureBetweenPixels();
 
         List<Integer> template = new ArrayList<>();
 
@@ -38,16 +42,39 @@ public class PixelCrossover implements Crossover {
             for(int j = 0; j < width; j++) {
                 if(template.get(i * j + i) == 0) {
                     double[] values = parent1.getImg().get(i,j);
-                    child.put(i, j, values);
+                    child1.put(i, j, values);
+                    child2.put(i, j, values);
                 } else {
                     double[] values = parent2.getImg().get(i,j);
-                    child.put(i, j, values);
+                    child2.put(i, j, values);
+                    child1.put(i, j, values);
                 }
             }
         }
 
-        childChromosome.setImg(child);
+        Chromosome c1 = new Chromosome();
+        c1.setImg(child1);
+
+        Chromosome c2 = new Chromosome();
+        c2.setImg(child2);
+
+        int fitness1 = measureBetweenPixels.findDistance(c1, alpha);
+        int fitness2 = measureBetweenPixels.findDistance(c2, alpha);
+
+        if(fitness1 < fitness2){
+            childChromosome.setImg(child1);
+        } else {
+            childChromosome.setImg(child2);
+        }
         childChromosome.mutation(pixels);
         return childChromosome;
+    }
+
+    public Chromosome getAlpha() {
+        return alpha;
+    }
+
+    public void setAlpha(Chromosome alpha) {
+        this.alpha = alpha;
     }
 }
