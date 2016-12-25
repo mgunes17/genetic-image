@@ -4,6 +4,7 @@ import genetic.Chromosome;
 import genetic.crossover.Crossover;
 import genetic.distance.DistanceMeasure;
 import genetic.distance.MeasureWithEdgeMatching;
+import genetic.selection.Selection;
 import org.opencv.core.Mat;
 
 import java.util.ArrayList;
@@ -19,6 +20,7 @@ public abstract class Life {
     private Chromosome alphaChromosome;
     private Crossover crossover;
     private DistanceMeasure distanceMeasure;
+    private Selection selection;
     private int width;
     private int height;
     private int type;
@@ -33,22 +35,6 @@ public abstract class Life {
         this.width = width;
         this.height = height;
         this.type = type;
-    }
-
-    public Chromosome selection() {
-        Random random = new Random();
-        int arraySize = (population.size() * (population.size() + 1)) / 2 + 1;
-        int[] orderedSelectList = new int[arraySize];
-        int selectRandom = random.nextInt(arraySize);
-        int arrayPointer = 1;
-        for (int i = 1; i < populationSize + 1; i++) {
-            for (int j = 0; j < populationSize - i +1; j++) {
-                orderedSelectList[arrayPointer] = i - 1;
-                arrayPointer++;
-            }
-        }
-
-        return population.get(orderedSelectList[selectRandom]);
     }
 
     public Mat findBestChromosome() {
@@ -73,8 +59,8 @@ public abstract class Life {
         int fitness = 0;
 
         for (int i = 0; i < getPopulationSize(); i++) {
-            parent1 = selection();
-            parent2 = selection();
+            parent1 = selection.selection(population);
+            parent2 = selection.selection(population);
 
             Chromosome child = crossover.crossover(parent1, parent2);
             fitness = distanceMeasure.findDistance(alphaChromosome, child);
@@ -149,5 +135,13 @@ public abstract class Life {
 
     public void setDistanceMeasure(DistanceMeasure distanceMeasure) {
         this.distanceMeasure = distanceMeasure;
+    }
+
+    public Selection getSelection() {
+        return selection;
+    }
+
+    public void setSelection(Selection selection) {
+        this.selection = selection;
     }
 }
