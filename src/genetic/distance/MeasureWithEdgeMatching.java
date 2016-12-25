@@ -6,9 +6,6 @@ import org.opencv.core.Mat;
 
 import java.util.List;
 
-/**
- * Created by mgunes on 25.12.2016.
- */
 public class MeasureWithEdgeMatching implements DistanceMeasure {
     @Override
     public int findDistance(Chromosome c1, Chromosome c2) {
