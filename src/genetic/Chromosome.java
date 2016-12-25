@@ -1,3 +1,6 @@
+package genetic;
+
+import kmeans.Pixel;
 import org.opencv.core.Mat;
 
 import java.util.List;
@@ -6,7 +9,6 @@ import java.util.Random;
 /**
  * Created by mgunes on 06.12.2016.
  */
-
 
 public class Chromosome implements Comparable<Chromosome> {
     private final static int mutationRate = 30;

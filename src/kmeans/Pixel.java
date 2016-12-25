@@ -1,3 +1,5 @@
+package kmeans;
+
 /**
  * Created by mgunes on 07.12.2016.
  */
