@@ -1,28 +1,24 @@
 package genetic.life;
 
 import genetic.Chromosome;
-import genetic.crossover.Crossover;
-import genetic.crossover.PixelCrossover;
-import genetic.distance.MeasureBetweenPixels;
+import genetic.crossover.UniformCrossover;
+import genetic.distance.MeasureWithPixelMatching;
 import genetic.selection.OrderBasedSelection;
 import kmeans.Pixel;
 import org.opencv.core.Mat;
 
 import java.util.*;
 
-/**
- * Created by mgunes on 06.12.2016.
- */
 public class LifeForPixel extends Life {
     private List<Pixel> pixels;
 
     public LifeForPixel(int populationSize, Chromosome alphaChromosome, int width, int height, int type, List<Pixel> pixels) {
         super(width, height, type, populationSize, alphaChromosome);
-        PixelCrossover crossover = new PixelCrossover(pixels);
+        UniformCrossover crossover = new UniformCrossover(pixels);
         crossover.setAlpha(alphaChromosome);
         setCrossover(crossover);
         setSelection(new OrderBasedSelection());
-        setDistanceMeasure(new MeasureBetweenPixels());
+        setDistanceMeasure(new MeasureWithPixelMatching());
         this.pixels = pixels;
     }
 

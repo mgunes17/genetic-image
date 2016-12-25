@@ -1,7 +1,7 @@
 package genetic.crossover;
 
 import genetic.Chromosome;
-import genetic.distance.MeasureBetweenPixels;
+import genetic.distance.MeasureWithPixelMatching;
 import kmeans.Pixel;
 import org.opencv.core.Mat;
 
@@ -12,11 +12,11 @@ import java.util.Random;
 /**
  * Created by mgunes on 25.12.2016.
  */
-public class PixelCrossover implements Crossover {
+public class UniformCrossover implements Crossover {
     private List<Pixel> pixels;
     private Chromosome alpha;
 
-    public PixelCrossover(List<Pixel> pixels) {
+    public UniformCrossover(List<Pixel> pixels) {
         this.pixels = pixels;
     }
 
@@ -30,7 +30,7 @@ public class PixelCrossover implements Crossover {
         Mat child2 = new Mat(height, width, type);
 
         Random random = new Random();
-        MeasureBetweenPixels measureBetweenPixels = new MeasureBetweenPixels();
+        MeasureWithPixelMatching measureWithPixelMatching = new MeasureWithPixelMatching();
 
         List<Integer> template = new ArrayList<>();
 
@@ -58,8 +58,8 @@ public class PixelCrossover implements Crossover {
         Chromosome c2 = new Chromosome();
         c2.setImg(child2);
 
-        int fitness1 = measureBetweenPixels.findDistance(c1, alpha);
-        int fitness2 = measureBetweenPixels.findDistance(c2, alpha);
+        int fitness1 = measureWithPixelMatching.findDistance(c1, alpha);
+        int fitness2 = measureWithPixelMatching.findDistance(c2, alpha);
 
         if(fitness1 < fitness2){
             childChromosome.setImg(child1);

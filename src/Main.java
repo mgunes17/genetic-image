@@ -1,6 +1,7 @@
 import genetic.Chromosome;
 import genetic.Coordinate;
 import genetic.life.Life;
+import genetic.life.LifeForAlpha;
 import genetic.life.LifeForEdge;
 import genetic.life.LifeForPixel;
 import kmeans.KMeans;
@@ -61,8 +62,8 @@ public class Main {
 
             LifeForEdge lifeForCircle = new LifeForEdge(75, alpha, imageCanny.width(), imageCanny.height(), imageCanny.type());
             main.run(lifeForCircle, imageCanny);
-        } else {
-            KMeans kMeans = new KMeans(img, 2);
+        } else if(select == 2){
+            KMeans kMeans = new KMeans(img, 5);
             kMeans.startKMeans();
             img = kMeans.getNewImg();
 
@@ -74,6 +75,20 @@ public class Main {
             Chromosome alpha = new Chromosome();
             alpha.setImg(img);
             LifeForPixel life = new LifeForPixel(75, alpha, img.width(), img.height(), img.type(), pixelsInImage);
+            main.run(life, img);
+        } else {
+            KMeans kMeans = new KMeans(img, 4);
+            kMeans.startKMeans();
+            img = kMeans.getNewImg();
+
+            Imgcodecs.imwrite("img.jpg", img);
+
+            List<Pixel> pixelsInImage = main.findColorsInImage(img);
+            System.out.println(pixelsInImage.size());
+
+            Chromosome alpha = new Chromosome();
+            alpha.setImg(img);
+            LifeForAlpha life = new LifeForAlpha(75, alpha, img.width(), img.height(), img.type(), pixelsInImage);
             main.run(life, img);
         }
     }
