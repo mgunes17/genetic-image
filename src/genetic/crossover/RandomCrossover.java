@@ -8,11 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-/**
- * Created by ercan on 25.12.2016.
- */
 public class RandomCrossover implements Crossover{
-    private List<Pixel> pixels;
     @Override
     public Chromosome crossover(Chromosome parent1, Chromosome parent2) {
         int width = parent1.getImg().width();
@@ -41,7 +37,7 @@ public class RandomCrossover implements Crossover{
         }
 
         childChromosome.setImg(child);
-        childChromosome.mutation(pixels);
+        childChromosome.mutation();
         return childChromosome;
     }
 }

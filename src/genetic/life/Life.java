@@ -6,35 +6,27 @@ import genetic.distance.DistanceMeasure;
 import genetic.distance.MeasureWithEdgeMatching;
 import genetic.selection.Selection;
 import org.opencv.core.Mat;
+import view.GlobalParameters;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.RunnableFuture;
 
 /**
  * Created by mgunes on 24.12.2016.
  */
-public abstract class Life {
+public abstract class Life  implements Runnable {
     private List<Chromosome> population;
-    private Chromosome alphaChromosome;
     private Crossover crossover;
     private DistanceMeasure distanceMeasure;
     private Selection selection;
-    private int width;
-    private int height;
-    private int type;
-    private int populationSize;
 
     public abstract void initialize();
 
-    public Life(int width, int height, int type, int populationSize, Chromosome alphaChromosome) {
+    public Life() {
         population = new ArrayList<Chromosome>();
-        this.alphaChromosome = alphaChromosome;
-        this.populationSize = populationSize;
-        this.width = width;
-        this.height = height;
-        this.type = type;
     }
 
     public Mat findBestChromosome() {
@@ -50,52 +42,36 @@ public abstract class Life {
         return bestMat;
     }
 
+    @Override
+    public void run() {
+        while(true) {
+            nextAge();
+        }
+    }
+
     public void nextAge() {
         Chromosome parent1, parent2;
         Collections.sort(getPopulation(), new LifeForPixel.FitnessComparator());
-        System.out.println(getPopulation().get(0).getFitness() + " " + getPopulation().get(getPopulationSize() - 1).getFitness());
+        System.out.println(getPopulation().get(0).getFitness() + " " + getPopulation().get(GlobalParameters.populationSize - 1).getFitness());
 
         List<Chromosome> newGeneration = new ArrayList<>();
         int fitness = 0;
 
-        for (int i = 0; i < getPopulationSize(); i++) {
+        for (int i = 0; i < GlobalParameters.populationSize; i++) {
             parent1 = selection.selection(population);
             parent2 = selection.selection(population);
 
             Chromosome child = crossover.crossover(parent1, parent2);
-            fitness = distanceMeasure.findDistance(alphaChromosome, child);
+            fitness = distanceMeasure.findDistance(GlobalParameters.alpha, child);
             child.setFitness(fitness);
             newGeneration.add(child);
         }
 
         setPopulation(newGeneration);
-        System.out.println(getPopulation().get(0).getFitness() + " " + getPopulation().get(getPopulationSize() - 1).getFitness());
+        System.out.println(getPopulation().get(0).getFitness() + " " + getPopulation().get(GlobalParameters.populationSize - 1).getFitness());
     }
 
     //getter-setter
-    public int getWidth() {
-        return width;
-    }
-
-    public void setWidth(int width) {
-        this.width = width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public void setHeight(int height) {
-        this.height = height;
-    }
-
-    public int getType() {
-        return type;
-    }
-
-    public void setType(int type) {
-        this.type = type;
-    }
 
     public List<Chromosome> getPopulation() {
         return population;
@@ -103,22 +79,6 @@ public abstract class Life {
 
     public void setPopulation(List<Chromosome> population) {
         this.population = population;
-    }
-
-    public int getPopulationSize() {
-        return populationSize;
-    }
-
-    public void setPopulationSize(int populationSize) {
-        this.populationSize = populationSize;
-    }
-
-    public Chromosome getAlphaChromosome() {
-        return alphaChromosome;
-    }
-
-    public void setAlphaChromosome(Chromosome alphaChromosome) {
-        this.alphaChromosome = alphaChromosome;
     }
 
     public Crossover getCrossover() {

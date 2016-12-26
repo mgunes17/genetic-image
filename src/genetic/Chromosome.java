@@ -2,6 +2,7 @@ package genetic;
 
 import kmeans.Pixel;
 import org.opencv.core.Mat;
+import view.GlobalParameters;
 
 import java.util.List;
 import java.util.Random;
@@ -11,7 +12,6 @@ import java.util.Random;
  */
 
 public class Chromosome implements Comparable<Chromosome> {
-    private final static int mutationRate = 30;
     private Mat img;
     private int fitness;
     private List<Coordinate> edgeCoordinates;
@@ -20,12 +20,12 @@ public class Chromosome implements Comparable<Chromosome> {
         super();
     }
 
-    public void mutation(List<Pixel> pixels) {
+    public void mutation() {
         Random random = new Random();
         int mutationChance = random.nextInt(100);
 
-        if (mutationChance < mutationRate) {
-            int mutantCount = random.nextInt(10) + 20;
+        if (mutationChance < GlobalParameters.mutationRate) {
+            int mutantCount = random.nextInt(10) + GlobalParameters.mutationCount;
             int mutantX, mutantY, imageWidth, imageHeight;
             double[] values = new double[3];
 
@@ -36,8 +36,8 @@ public class Chromosome implements Comparable<Chromosome> {
                 mutantX = random.nextInt(imageWidth);
                 mutantY = random.nextInt(imageHeight);
 
-                int randomElement = random.nextInt(pixels.size());
-                Pixel pixel = pixels.get(randomElement);
+                int randomElement = random.nextInt(GlobalParameters.pixels.size());
+                Pixel pixel = GlobalParameters.pixels.get(randomElement);
 
                 values[0] = pixel.getB();
                 values[1] = pixel.getG();
@@ -52,8 +52,8 @@ public class Chromosome implements Comparable<Chromosome> {
         Random random = new Random();
         int mutationChance = random.nextInt(100);
 
-        if (mutationChance < mutationRate) {
-            int mutantCount = random.nextInt(10) + 20;
+        if (mutationChance < GlobalParameters.mutationRate) {
+            int mutantCount = random.nextInt(10) + GlobalParameters.mutationCount;
             int mutantX, mutantY, imageWidth, imageHeight;
             int unMutate;
 
