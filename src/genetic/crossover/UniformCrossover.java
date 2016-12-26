@@ -4,6 +4,7 @@ import genetic.Chromosome;
 import genetic.distance.MeasureWithPixelMatching;
 import kmeans.Pixel;
 import org.opencv.core.Mat;
+import view.GlobalParameters;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +15,6 @@ import java.util.Random;
  */
 public class UniformCrossover implements Crossover {
     private List<Pixel> pixels;
-    private Chromosome alpha;
 
     public UniformCrossover(List<Pixel> pixels) {
         this.pixels = pixels;
@@ -30,7 +30,6 @@ public class UniformCrossover implements Crossover {
         Mat child2 = new Mat(height, width, type);
 
         Random random = new Random();
-        MeasureWithPixelMatching measureWithPixelMatching = new MeasureWithPixelMatching();
 
         List<Integer> template = new ArrayList<>();
 
@@ -58,23 +57,15 @@ public class UniformCrossover implements Crossover {
         Chromosome c2 = new Chromosome();
         c2.setImg(child2);
 
-        int fitness1 = measureWithPixelMatching.findDistance(c1, alpha);
-        int fitness2 = measureWithPixelMatching.findDistance(c2, alpha);
+        int fitness1 = GlobalParameters.distanceMeasure.findDistance(c1, GlobalParameters.alpha);
+        int fitness2 = GlobalParameters.distanceMeasure.findDistance(c2, GlobalParameters.alpha);
 
         if(fitness1 < fitness2){
             childChromosome.setImg(child1);
         } else {
             childChromosome.setImg(child2);
         }
-        childChromosome.mutation(pixels);
+        childChromosome.mutation();
         return childChromosome;
-    }
-
-    public Chromosome getAlpha() {
-        return alpha;
-    }
-
-    public void setAlpha(Chromosome alpha) {
-        this.alpha = alpha;
     }
 }

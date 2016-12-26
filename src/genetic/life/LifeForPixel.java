@@ -1,24 +1,19 @@
 package genetic.life;
 
 import genetic.Chromosome;
-import genetic.crossover.UniformCrossover;
-import genetic.distance.MeasureWithPixelMatching;
-import genetic.selection.OrderBasedSelection;
 import kmeans.Pixel;
 import org.opencv.core.Mat;
+import view.GlobalParameters;
 
 import java.util.*;
 
 public class LifeForPixel extends Life {
     private List<Pixel> pixels;
 
-    public LifeForPixel(int populationSize, Chromosome alphaChromosome, int width, int height, int type, List<Pixel> pixels) {
-        super(width, height, type, populationSize, alphaChromosome);
-        UniformCrossover crossover = new UniformCrossover(pixels);
-        crossover.setAlpha(alphaChromosome);
-        setCrossover(crossover);
-        setSelection(new OrderBasedSelection());
-        setDistanceMeasure(new MeasureWithPixelMatching());
+    public LifeForPixel(List<Pixel> pixels) {
+        setCrossover(GlobalParameters.crossover);
+        setSelection(GlobalParameters.selection);
+        setDistanceMeasure(GlobalParameters.distanceMeasure);
         this.pixels = pixels;
     }
 
@@ -26,17 +21,17 @@ public class LifeForPixel extends Life {
         double[] values;
         int fitness;
 
-        for (int k = 0; k < getPopulationSize(); k++) {
+        for (int k = 0; k < GlobalParameters.populationSize; k++) {
             Chromosome chromosome = new Chromosome();
-            Mat newImage = new Mat(getHeight(), getWidth(), getType());
-            for (int i = 0; i < getWidth(); i++) {
-                for (int j = 0; j < getHeight(); j++) {
+            Mat newImage = new Mat(GlobalParameters.height, GlobalParameters.width, GlobalParameters.type);
+            for (int i = 0; i < GlobalParameters.width; i++) {
+                for (int j = 0; j < GlobalParameters.height; j++) {
                     values = createRandomColor();
                     newImage.put(j, i, values);
                 }
             }
             chromosome.setImg(newImage);
-            fitness = getDistanceMeasure().findDistance(getAlphaChromosome(), chromosome);
+            fitness = getDistanceMeasure().findDistance(GlobalParameters.alpha, chromosome);
             chromosome.setFitness(fitness);
             getPopulation().add(chromosome);
         }
